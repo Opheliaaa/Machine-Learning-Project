@@ -1,0 +1,124 @@
+---
+title: "Landfall"
+author: "Yi Wei"
+date: "3/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+
+##Dropped unnecessary columns in best_track and manually add the landfall dates for those hurricanes before 1970. The following function returns the landfall date for a specific hurricane (specified by its name and year).
+
+```{r}
+best_track_updated <- read.csv("../data/best_track_updated.csv",header = TRUE)
+get_landfall_date = function(name, year) {
+  name = tolower(name)
+  index = which(tolower(best_track_updated$time) == name)
+  start = index[which(substrRight(as.character(best_track_updated$date[index]), 4) == year)]
+  hurricane = grep("[A-Z]", best_track_updated$time)
+  end = hurricane[which(hurricane == start) + 1]
+  in_df = best_track_updated[start:(end-1), ]
+  in_df = in_df[-1, ]
+  in_date = (in_df$date[which(in_df$landfall == "L" & in_df$category > 1)])
+  
+  in_date = as.Date(in_date, "%Y%m%d")
+  
+  return(c(in_date))
+}
+```
+
+## get the landfall hour
+```{r}
+get_landfall_hour = function(name, year) {
+  name = tolower(name)
+  index = which(tolower(best_track_updated$time) == name)
+  start = index[which(substrRight(as.character(best_track_updated$date[index]), 4) == year)]
+  hurricane = grep("[A-Z]", best_track_updated$time)
+  end = hurricane[which(hurricane == start) + 1]
+  in_df = best_track_updated[start:(end-1), ]
+  in_df = in_df[-1, ]
+  hour = (in_df$time[which(in_df$landfall == "L" & in_df$category > 1)])
+  
+  #in_date = as.Date(in_date, "%Y%m%d")
+  
+  return(hour)
+}
+```
+
+## get the landfall category
+```{r}
+get_landfall_category = function(name, year) {
+  name = tolower(name)
+  index = which(tolower(best_track_updated$time) == name)
+  start = index[which(substrRight(as.character(best_track_updated$date[index]), 4) == year)]
+  hurricane = grep("[A-Z]", best_track_updated$time)
+  end = hurricane[which(hurricane == start) + 1]
+  in_df = best_track_updated[start:(end-1), ]
+  in_df = in_df[-1, ]
+  category = (in_df$category[which(in_df$landfall == "L" & in_df$category > 1)])
+  
+  #in_date = as.Date(in_date, "%Y%m%d")
+  
+  return(category)
+}
+```
+
+
+
+##Create a data frame with columns hurricane names and landfall dates.
+```{r}
+landfall <- data.frame()
+for (i in 1:100) {
+  df=data.frame()
+  ld=get_landfall_date(hurricane_names[i], dates[i])
+  name = hurricane_names[i]
+  hour=get_landfall_hour(hurricane_names[i], dates[i])
+  for (i in 1:length(ld)){
+    df[nrow(df)+1, 1:2] = list(paste0(toupper(as.character(name)), i), ld[i])
+  }
+  landfall = rbind(landfall, df)
+}
+```
+
+## append hour column
+```{r}
+hour=c()
+for (i in 1:100) {
+  hour=c(hour,as.integer(as.character(get_landfall_hour(hurricane_names[i], dates[i]))))
+}
+```
+
+## append category column
+```{r}
+category=c()
+for (i in 1:100) {
+  category=c(category,as.integer(get_landfall_category(hurricane_names[i], dates[i])))
+}
+```
+
+
+##Changed column names and dropped missing values.
+```{r}
+names(landfall)=c('hurricanes','landfalldate')
+landfall=landfall%>%filter(!is.na(landfalldate))
+landfall
+```
+```{r}
+landfall['hour']=hour
+landfall['category']=category
+landfall$hour=landfall$hour %/% 100
+landfall
+```
+
+
+## output landfalldates.csv
+```{r}
+write.csv(landfall, file = '../data/landfalldates.csv')
+```
+
+
+
