@@ -1,0 +1,23 @@
+Test Loss: 0.0111 Test Accuracy: 0.9
+
+optimizer_args = 
+        "name": "SGD",
+        "lr": 0.5,# YOUR CODE HERE,
+        "lr_scheduler": 'constant', # YOUR CODE HERE
+        "lr_decay": 0.005,# YOUR CODE HERE,
+        "stage_length": 1, # YOUR CODE HERE,
+        "staircase": False,# YOUR CODE HERE,
+        "clip_norm": 1, # YOUR CODE HERE,
+        "momentum": 0.04 # YOUR CODE HERE,
+
+model_args = 
+        "loss": 'cross_entropy',# YOUR CODE HERE,
+        "layer_args": layer_args,
+        "optimizer_args": optimizer_args,
+        "seed": 189,# YOUR CODE HERE,
+        'name':'iris two layer' ###########
+
+data_args = 
+        "name": "iris", # YOUR CODE HERE, name of dataset, e.g. "iris"
+        "batch_size": 10 # YOUR CODE HERE,
+ 

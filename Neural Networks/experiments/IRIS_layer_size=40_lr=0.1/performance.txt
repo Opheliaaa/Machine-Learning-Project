@@ -1,0 +1,21 @@
+Test Loss: 0.0526 Test Accuracy: 0.9333
+
+optimizer_args = AttrDict(
+    {
+        "name": "SGD",
+        "lr": 1e-1,# YOUR CODE HERE,
+        "lr_scheduler": 'constant', # YOUR CODE HERE
+        "lr_decay": 0.005,# YOUR CODE HERE,
+        "stage_length": 1, # YOUR CODE HERE,
+        "staircase": False,# YOUR CODE HERE,
+        "clip_norm": 1, # YOUR CODE HERE,
+        "momentum": 0.04 # YOUR CODE HERE,
+    }
+)
+
+data_args = AttrDict(
+    {
+        "name": "iris", # YOUR CODE HERE, name of dataset, e.g. "iris"
+        "batch_size": 10 # YOUR CODE HERE,
+    }
+)
